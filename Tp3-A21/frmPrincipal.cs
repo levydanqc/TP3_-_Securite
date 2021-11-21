@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.VisualBasic;
@@ -16,6 +17,8 @@ namespace Tp3_A21
 {
     public partial class frmPrincipal : Form
     {
+        private TreeNode _parentNode;
+
         public frmPrincipal()
         {
             InitializeComponent();
@@ -33,9 +36,32 @@ namespace Tp3_A21
             tvHTML.Nodes.Clear();
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                using (StreamReader file = new StreamReader(ofd.FileName))
+                {
+                    string html = file.ReadToEnd();
+                    html = html.Replace("\r", "");
+
+                    // Find comments: <!--(.*?)-->
+                    // Self closing: area, base, br, col, embed, hr, img, input, link, meta, param, source, trac, wbr
+                    // Get Tag name: <(\w+)\s+\w+.*?>
+
+                }
+
                 //TODO#1 Chargement du fichier HTML
             }
         }
+
+        private void HtmlToTreeView(List<String> tags)
+        {
+            foreach (string tag in tags)
+            {
+                if (tag.StartsWith("</"))
+                {
+                    _parentNode = new Balise("",new Dictionary<string, string>(){{"", ""}}, "");
+                }
+                _parentNode.
+            }
+        } 
 
         private void enregistrerToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -55,7 +81,16 @@ namespace Tp3_A21
 
         private void btnRechParId_Click(object sender, EventArgs e)
         {
-            //TODO#3 RechercheParId
+            int i = 0;
+            tvHTML.SelectedNode = null;
+
+            while (tvHTML.SelectedNode == null && i < tvHTML.Nodes.Count)
+            {
+                tvHTML.SelectedNode = ((Balise)tvHTML.Nodes[i]).FindById(txtRechID.Text);
+                i++;
+            }
+
+            tvHTML.Focus();
         }
 
 

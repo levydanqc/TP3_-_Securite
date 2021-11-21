@@ -29,7 +29,7 @@ namespace Tp3_A21
         private void btnAjoutAttribut_Click(object sender, EventArgs e)
         {
             frmAttribut formSecondaire = new frmAttribut();
-            if (formSecondaire.DialogResult == DialogResult.OK)
+            if (formSecondaire.ShowDialog() == DialogResult.OK)
             {
                 _attributs.Add(formSecondaire.Cle, formSecondaire.Valeur);
                 AffichageAttributs();

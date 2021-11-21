@@ -104,12 +104,34 @@ namespace Tp3_A21
 
         private void btnMonter_Click(object sender, EventArgs e)
         {
-            //TODO#5 Faire monter la balise sélectionnée
+            if (tvHTML.SelectedNode != null)
+            {
+                TreeNode parent = tvHTML.SelectedNode.Parent;
+                int i = parent.Nodes.IndexOf(tvHTML.SelectedNode);
+                if (i > 0)
+                {
+                    TreeNode tempo = tvHTML.SelectedNode;
+                    parent.Nodes.RemoveAt(i);
+                    parent.Nodes.Insert(i - 1, tempo);
+                }
+            }
+            tvHTML.Focus();
         }
 
         private void btnDescendre_Click(object sender, EventArgs e)
         {
-            //TODO#5 Faire descendre la balise sélectionnée
+            if (tvHTML.SelectedNode != null)
+            {
+                TreeNode parent = tvHTML.SelectedNode.Parent;
+                int i = parent.Nodes.IndexOf(tvHTML.SelectedNode);
+                if (i < parent.Nodes.Count - 1)
+                {
+                    TreeNode tempo = tvHTML.SelectedNode;
+                    parent.Nodes.RemoveAt(i);
+                    parent.Nodes.Insert(i + 1, tempo);
+                }
+            }
+            tvHTML.Focus();
         }
 
         #endregion

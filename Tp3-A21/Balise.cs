@@ -50,5 +50,43 @@ namespace Tp3_A21
         {
             return "<" + Nom + ">" + " (" + Attributs.Count + " attributs)";
         }
+
+        public Balise FindById(String pId)
+        {
+            if (Attributs.ContainsKey("id") && Attributs["id"] == pId)
+            {
+                return this;
+            }
+            
+            foreach (Balise node in Nodes)
+            {
+                Balise tempo = node.FindById(pId);
+                if (tempo != null) return tempo;
+            }
+
+            return null;
+        }
+
+        public List<Balise> HasTag(String pTag)
+        {
+            List<Balise> list = new List<Balise>();
+
+            if (Nodes.Count == 0)
+            {
+                if (Nom == pTag)
+                {
+                    list.Add(this);
+                }
+            }
+            else
+            {
+                foreach (Balise balise in Nodes)
+                {
+                    list.AddRange(balise.HasTag(pTag));
+                }    
+            }
+
+            return list;
+        }
     }
 }

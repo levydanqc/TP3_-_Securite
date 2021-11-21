@@ -59,7 +59,7 @@ namespace Tp3_A21
                 {
                     _parentNode = new Balise("",new Dictionary<string, string>(){{"", ""}}, "");
                 }
-                _parentNode.
+                
             }
         } 
 
@@ -96,7 +96,10 @@ namespace Tp3_A21
 
         private void btnRechParTags_Click(object sender, EventArgs e)
         {
-            //TODO#4 RechercheParTag
+            foreach (Balise balise in tvHTML.Nodes)
+            {
+                lbRechParTag.DataSource = balise.HasTag(txtRechTags.Text).ToArray();
+            }
         }
 
         private void btnMonter_Click(object sender, EventArgs e)

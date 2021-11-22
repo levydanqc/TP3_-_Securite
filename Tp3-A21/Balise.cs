@@ -63,7 +63,7 @@ namespace Tp3_A21
             return "<" + Nom + ">" + " (" + Attributs.Count + " attributs)";
         }
 
-        public string ToStringHTML()
+        private string ToStringHTML()
         {
             if (IsSelfClosing)
             {

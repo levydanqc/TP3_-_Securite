@@ -66,7 +66,14 @@ namespace Tp3_A21
 
         private void enregistrerToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //TODO#2 Enregistrement du fichier
+            if (_fileName != "")
+            {
+                WriteToFile(_fileName);
+            }
+            else
+            {
+                enregistrerSousToolStripMenuItem_Click(sender, e);
+            }
         }
 
         private void enregistrerSousToolStripMenuItem_Click(object sender, EventArgs e)
@@ -75,21 +82,26 @@ namespace Tp3_A21
             sfd.Filter = "Fichiers html (*.html)|*.html";
             sfd.DefaultExt = "html";
             sfd.Title = "Enregistrer le fichier HTML";
-
+             
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                List<String> tags = new List<string>() {"<!-- AUTO-GENERATED HTML -->", "<!DOCTYPE html>"};
-
-                foreach (Balise balise in tvHTML.Nodes)
-                {
-                    tags.AddRange(balise.ToHTML());
-                }
-
-                using StreamWriter sw = new StreamWriter(sfd.FileName);
-                sw.WriteLine(string.Join("\n", tags));
+                WriteToFile(sfd.FileName);
             }
 
             _fileName = sfd.FileName;
+        }
+
+        private void WriteToFile(string pFileName)
+        {
+            List<String> tags = new List<string>() { "<!-- AUTO-GENERATED HTML -->", "<!DOCTYPE html>" };
+
+            foreach (Balise balise in tvHTML.Nodes)
+            {
+                tags.AddRange(balise.ToHTML());
+            }
+
+            using StreamWriter sw = new StreamWriter(pFileName, false);
+            sw.WriteLine(string.Join("\n", tags));
         }
 
         private void btnRechParId_Click(object sender, EventArgs e)

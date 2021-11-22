@@ -47,7 +47,7 @@ namespace Tp3_A21
             IsSelfClosing = new List<string>()
             {
                 "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link", "meta",
-                "param", "source", "track", "wbr"
+                "param", "source", "track", "wbr", "script", "meta", "link"
             }.Contains(pNom);
         }
 
@@ -67,9 +67,9 @@ namespace Tp3_A21
         {
             if (IsSelfClosing)
             {
-                return $"<{Nom} {string.Join(" ", Attributs.Select(pKV => $"{pKV.Key}=\"pKV.Value\"").ToArray())} />";
+                return $"<{Nom} {string.Join(" ", Attributs.Select(pKV => $"{pKV.Key}=\"{pKV.Value}\"").ToArray())} />";
             }
-            return $"<{Nom} {string.Join(" ", Attributs.Select(pKV => $"{pKV.Key}=\"pKV.Value\"").ToArray())}>{Contenu}</{Nom}>";
+            return $"<{Nom} {string.Join(" ", Attributs.Select(pKV => $"{pKV.Key}=\"{pKV.Value}\"").ToArray())}>{Contenu}";
         }
 
         public Balise FindById(String pId)
@@ -114,16 +114,16 @@ namespace Tp3_A21
         {
             List<string> tags = new List<string>();
 
-            if (Nodes.Count == 0)
+            tags.Add(ToStringHTML());
+
+            foreach (Balise balise in Nodes)
             {
-                tags.Add(ToStringHTML());
+                tags.AddRange(balise.ToHTML());
             }
-            else
+
+            if (!IsSelfClosing)
             {
-                foreach (Balise balise in Nodes)
-                {
-                    tags.AddRange(balise.ToHTML());
-                }
+                tags.Add($"</{Nom}>");
             }
 
             return tags;

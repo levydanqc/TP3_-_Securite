@@ -17,6 +17,7 @@ namespace Tp3_A21
 {
     public partial class frmPrincipal : Form
     {
+        private string _fileName = "";
         private TreeNode _parentNode;
 
         public frmPrincipal()
@@ -73,10 +74,22 @@ namespace Tp3_A21
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Fichiers html (*.html)|*.html";
             sfd.DefaultExt = "html";
+            sfd.Title = "Enregistrer le fichier HTML";
+
             if (sfd.ShowDialog() == DialogResult.OK)
             {
-                //TODO#2 Enregistrement du fichier
+                List<String> tags = new List<string>() {"<!-- AUTO-GENERATED HTML -->", "<!DOCTYPE html>"};
+
+                foreach (Balise balise in tvHTML.Nodes)
+                {
+                    tags.AddRange(balise.ToHTML());
+                }
+
+                using StreamWriter sw = new StreamWriter(sfd.FileName);
+                sw.WriteLine(string.Join("\n", tags));
             }
+
+            _fileName = sfd.FileName;
         }
 
         private void btnRechParId_Click(object sender, EventArgs e)

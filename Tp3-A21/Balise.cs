@@ -58,6 +58,7 @@ namespace Tp3_A21
             Text = ToString();
         }
 
+
         public override string ToString()
         {
             return "<" + Nom + ">" + " (" + Attributs.Count + " attributs)";
@@ -92,13 +93,11 @@ namespace Tp3_A21
         {
             List<Balise> list = new List<Balise>();
 
-            if (Nodes.Count == 0)
+            if (Nom == pTag)
             {
-                if (Nom == pTag)
-                {
-                    list.Add(this);
-                }
+                list.Add(this);
             }
+
             else
             {
                 foreach (Balise balise in Nodes)

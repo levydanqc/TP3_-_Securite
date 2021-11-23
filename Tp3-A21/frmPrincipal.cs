@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -41,28 +38,68 @@ namespace Tp3_A21
                 {
                     string html = file.ReadToEnd();
                     html = html.Replace("\r", "");
+                    html = html.Replace("\n", "");
+                    List<string> tags = html.Split('<').ToList();
 
-                    // Find comments: <!--(.*?)-->
-                    // Self closing: area, base, br, col, embed, hr, img, input, link, meta, param, source, trac, wbr
-                    // Get Tag name: <(\w+)\s+\w+.*?>
+                    foreach (string tag in tags.ToList())
+                    {
+                        if (tag == "")
+                        {
+                            tags.Remove(tag);
+                        }
+                        if (Regex.IsMatch(tag, @"!(.*?)>"))
+                        {
+                            tags.Remove(tag);
+                        }
+                    }
 
+                    Balise firstNode = StringToBalise(tags[0]);
+                    tags.RemoveAt(0);
+                    HtmlToTreeView(tags, firstNode);
+                    tvHTML.Nodes.Add(firstNode);
                 }
 
-                //TODO#1 Chargement du fichier HTML
             }
         }
 
-        private void HtmlToTreeView(List<String> tags)
+        private void HtmlToTreeView(List<String> pTags, TreeNode pNoeudCourant)
         {
-            foreach (string tag in tags)
+            if (pTags[0][0] == '/')
             {
-                if (tag.StartsWith("</"))
-                {
-                    _parentNode = new Balise("",new Dictionary<string, string>(){{"", ""}}, "");
-                }
-                
+                pNoeudCourant = pNoeudCourant.Parent;
             }
-        } 
+            else
+            {
+                Balise balise = StringToBalise(pTags[0]);
+                pNoeudCourant.Nodes.Add(balise);
+                if (!balise.IsSelfClosing)
+                    pNoeudCourant = balise;
+            }
+            pTags.RemoveAt(0);
+
+            if (pTags.Count > 0)
+                HtmlToTreeView(pTags, pNoeudCourant);
+        }
+
+        private Balise StringToBalise(String pTag)
+        {
+            MatchCollection matches = Regex.Matches(pTag, @"(\S+)=[""']?((?:.(?![""']?\s+(?:\S+)=|\s*\/?[>""']))+.)[""']?");
+            Dictionary<string, string> dict = new Dictionary<string, string>();
+
+            foreach (Match m in matches)
+            {
+                dict.Add(m.Groups[1].Value, m.Groups[2].Value);
+            }
+
+            Balise balise = new Balise(
+            pNom: Regex.Match(pTag, @"(\w+)\s*\w*.*?>").Groups[1].Value,
+            pAttributs: dict,
+            pContenu: Regex.Match(pTag, @".*?>(\w+.*)").Groups[1].Value
+            );
+
+            return balise;
+
+        }
 
         private void enregistrerToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -82,7 +119,7 @@ namespace Tp3_A21
             sfd.Filter = "Fichiers html (*.html)|*.html";
             sfd.DefaultExt = "html";
             sfd.Title = "Enregistrer le fichier HTML";
-             
+
             if (sfd.ShowDialog() == DialogResult.OK)
             {
                 WriteToFile(sfd.FileName);
@@ -159,6 +196,8 @@ namespace Tp3_A21
             tvHTML.Focus();
         }
 
+
+
         #endregion
 
 
@@ -179,9 +218,9 @@ namespace Tp3_A21
                 frmAttribut formSecondaire = new frmAttribut();
                 if (formSecondaire.ShowDialog() == DialogResult.OK)
                 {
-                    if (!((Balise) tvHTML.SelectedNode).Attributs.ContainsKey(formSecondaire.Cle))
+                    if (!((Balise)tvHTML.SelectedNode).Attributs.ContainsKey(formSecondaire.Cle))
                     {
-                        ((Balise) tvHTML.SelectedNode).Attributs.Add(formSecondaire.Cle, formSecondaire.Valeur);
+                        ((Balise)tvHTML.SelectedNode).Attributs.Add(formSecondaire.Cle, formSecondaire.Valeur);
                         AffichageAttributs();
                         tvHTML.SelectedNode.Text = tvHTML.SelectedNode.ToString();
                     }
@@ -233,8 +272,8 @@ namespace Tp3_A21
         {
             if (ValidationAttribut())
             {
-                ((Balise) tvHTML.SelectedNode).Attributs.Remove(
-                    ((KeyValuePair<string, string>) lbAttributs.SelectedItem).Key);
+                ((Balise)tvHTML.SelectedNode).Attributs.Remove(
+                    ((KeyValuePair<string, string>)lbAttributs.SelectedItem).Key);
                 AffichageAttributs();
             }
         }
@@ -247,7 +286,7 @@ namespace Tp3_A21
         {
             if (ValidationHTML())
             {
-                ((Balise) tvHTML.SelectedNode).Contenu = txtContenu.Text;
+                ((Balise)tvHTML.SelectedNode).Contenu = txtContenu.Text;
                 tvHTML.Focus();
             }
         }
@@ -257,7 +296,7 @@ namespace Tp3_A21
             if (ValidationHTML())
             {
                 AffichageAttributs();
-                txtContenu.Text = ((Balise) tvHTML.SelectedNode).Contenu;
+                txtContenu.Text = ((Balise)tvHTML.SelectedNode).Contenu;
             }
         }
 
@@ -266,7 +305,7 @@ namespace Tp3_A21
             lbAttributs.Items.Clear();
             if (tvHTML.SelectedNode != null)
             {
-                foreach (KeyValuePair<string, string> attribut in ((Balise) tvHTML.SelectedNode).Attributs)
+                foreach (KeyValuePair<string, string> attribut in ((Balise)tvHTML.SelectedNode).Attributs)
                 {
                     lbAttributs.Items.Add(attribut);
                 }
@@ -277,7 +316,7 @@ namespace Tp3_A21
         {
             if (lbRechParTag.SelectedIndex != -1)
             {
-                tvHTML.SelectedNode = (Balise) lbRechParTag.SelectedItem;
+                tvHTML.SelectedNode = (Balise)lbRechParTag.SelectedItem;
                 tvHTML.Focus();
             }
         }

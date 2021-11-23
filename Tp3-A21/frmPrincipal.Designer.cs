@@ -1,7 +1,7 @@
 ﻿
 namespace Tp3_A21
 {
-    partial class frmPrincipal
+    partial class FrmPrincipal
     {
         /// <summary>
         /// Required designer variable.
@@ -342,7 +342,7 @@ namespace Tp3_A21
             this.Controls.Add(this.tvHTML);
             this.Controls.Add(this.menuPrincipal);
             this.MainMenuStrip = this.menuPrincipal;
-            this.Name = "frmPrincipal";
+            this.Name = "FrmPrincipal";
             this.Text = "frmPrincipal";
             this.menuPrincipal.ResumeLayout(false);
             this.menuPrincipal.PerformLayout();

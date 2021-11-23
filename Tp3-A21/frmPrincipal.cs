@@ -3,21 +3,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Microsoft.VisualBasic;
 using Tp3_A21.Properties;
 
 namespace Tp3_A21
 {
-    public partial class frmPrincipal : Form
+    public partial class FrmPrincipal : Form
     {
         private string _fileName = "";
-        private TreeNode _parentNode;
 
-        public frmPrincipal()
+        public FrmPrincipal()
         {
             InitializeComponent();
             btnMonter.Image = new Bitmap(Resources.arrowup, btnMonter.Width, btnMonter.Height);
@@ -26,10 +22,10 @@ namespace Tp3_A21
 
         #region A faire
 
-        private void ouvrirToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ouvrirToolStripMenuItem_Click(object pSender, EventArgs pE)
         {
             OpenFileDialog ofd = new OpenFileDialog();
-            ofd.Filter = "Fichiers html (*.html)|*.html";
+            ofd.Filter = @"Fichiers html (*.html)|*.html";
             ofd.DefaultExt = "html";
             tvHTML.Nodes.Clear();
             if (ofd.ShowDialog() == DialogResult.OK)
@@ -55,14 +51,20 @@ namespace Tp3_A21
 
                     Balise firstNode = StringToBalise(tags[0]);
                     tags.RemoveAt(0);
-                    HtmlToTreeView(tags, firstNode);
+                    HtmlToNode(tags, firstNode);
                     tvHTML.Nodes.Add(firstNode);
                 }
 
             }
         }
 
-        private void HtmlToTreeView(List<String> pTags, TreeNode pNoeudCourant)
+        /// <summary>
+        /// Fonction récursice de conversion d'une liste
+        /// de string de tag html en un arbre
+        /// </summary>
+        /// <param name="pTags">Une liste de string de tag html</param>
+        /// <param name="pNoeudCourant">Le noeud parent actuel de l'arbre</param>
+        private void HtmlToNode(List<String> pTags, TreeNode pNoeudCourant)
         {
             if (pTags[0][0] == '/')
             {
@@ -78,9 +80,15 @@ namespace Tp3_A21
             pTags.RemoveAt(0);
 
             if (pTags.Count > 0)
-                HtmlToTreeView(pTags, pNoeudCourant);
+                HtmlToNode(pTags, pNoeudCourant);
         }
-
+        
+        /// <summary>
+        /// Fonction de conversion d'un chaine de caractères
+        /// en une instance de la classe Balise
+        /// </summary>
+        /// <param name="pTag">Une string d'un tag HTML</param>
+        /// <returns>Une instance de la classe Balise correspondant au tag</returns>
         private Balise StringToBalise(String pTag)
         {
             MatchCollection matches = Regex.Matches(pTag, @"(\S+)=[""']?((?:.(?![""']?\s+(?:\S+)=|\s*\/?[>""']))+.)[""']?");
@@ -101,7 +109,7 @@ namespace Tp3_A21
 
         }
 
-        private void enregistrerToolStripMenuItem_Click(object sender, EventArgs e)
+        private void enregistrerToolStripMenuItem_Click(object pSender, EventArgs pE)
         {
             if (_fileName != "")
             {
@@ -109,16 +117,16 @@ namespace Tp3_A21
             }
             else
             {
-                enregistrerSousToolStripMenuItem_Click(sender, e);
+                enregistrerSousToolStripMenuItem_Click(pSender, pE);
             }
         }
 
-        private void enregistrerSousToolStripMenuItem_Click(object sender, EventArgs e)
+        private void enregistrerSousToolStripMenuItem_Click(object pSender, EventArgs pE)
         {
             SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "Fichiers html (*.html)|*.html";
+            sfd.Filter = @"Fichiers html (*.html)|*.html";
             sfd.DefaultExt = "html";
-            sfd.Title = "Enregistrer le fichier HTML";
+            sfd.Title = @"Enregistrer le fichier HTML";
 
             if (sfd.ShowDialog() == DialogResult.OK)
             {
@@ -128,20 +136,24 @@ namespace Tp3_A21
             _fileName = sfd.FileName;
         }
 
+        /// <summary>
+        /// Fonction d'écriture du TreeView en un fichier HTML
+        /// </summary>
+        /// <param name="pFileName">Le nom du fichier dans lequel enregistrer</param>
         private void WriteToFile(string pFileName)
         {
-            List<String> tags = new List<string>() { "<!-- AUTO-GENERATED HTML -->", "<!DOCTYPE html>" };
+            List<string> tags = new List<string>() { "<!-- AUTO-GENERATED HTML -->", "<!DOCTYPE html>" };
 
             foreach (Balise balise in tvHTML.Nodes)
             {
-                tags.AddRange(balise.ToHTML());
+                tags.AddRange(balise.ToHtml());
             }
 
             using StreamWriter sw = new StreamWriter(pFileName, false);
             sw.WriteLine(string.Join("\n", tags));
         }
 
-        private void btnRechParId_Click(object sender, EventArgs e)
+        private void btnRechParId_Click(object pSender, EventArgs pE)
         {
             int i = 0;
             tvHTML.SelectedNode = null;
@@ -156,7 +168,7 @@ namespace Tp3_A21
         }
 
 
-        private void btnRechParTags_Click(object sender, EventArgs e)
+        private void btnRechParTags_Click(object pSender, EventArgs pE)
         {
             foreach (Balise balise in tvHTML.Nodes)
             {
@@ -164,7 +176,7 @@ namespace Tp3_A21
             }
         }
 
-        private void btnMonter_Click(object sender, EventArgs e)
+        private void btnMonter_Click(object pSender, EventArgs pE)
         {
             if (tvHTML.SelectedNode != null)
             {
@@ -180,7 +192,7 @@ namespace Tp3_A21
             tvHTML.Focus();
         }
 
-        private void btnDescendre_Click(object sender, EventArgs e)
+        private void btnDescendre_Click(object pSender, EventArgs pE)
         {
             if (tvHTML.SelectedNode != null)
             {
@@ -196,14 +208,12 @@ namespace Tp3_A21
             tvHTML.Focus();
         }
 
-
-
         #endregion
 
 
         #region Menu
 
-        private void nouveauToolStripMenuItem_Click(object sender, EventArgs e)
+        private void nouveauToolStripMenuItem_Click(object pSender, EventArgs pE)
         {
             tvHTML.Nodes.Clear();
             tvHTML.Nodes.Add(new Balise("html"));
@@ -211,11 +221,11 @@ namespace Tp3_A21
             tvHTML.Nodes[0].Nodes.Add(new Balise("body"));
         }
 
-        private void ajouterToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ajouterToolStripMenuItem_Click(object pSender, EventArgs pE)
         {
-            if (ValidationHTML())
+            if (ValidationHtml())
             {
-                frmAttribut formSecondaire = new frmAttribut();
+                FrmAttribut formSecondaire = new FrmAttribut();
                 if (formSecondaire.ShowDialog() == DialogResult.OK)
                 {
                     if (!((Balise)tvHTML.SelectedNode).Attributs.ContainsKey(formSecondaire.Cle))
@@ -226,21 +236,21 @@ namespace Tp3_A21
                     }
                     else
                     {
-                        MessageBox.Show("Attribut déjà présent dans cet élément");
+                        MessageBox.Show(@"Attribut déjà présent dans cet élément");
                     }
                 }
             }
         }
 
-        private void fermerToolStripMenuItem_Click(object sender, EventArgs e)
+        private void fermerToolStripMenuItem_Click(object pSender, EventArgs pE)
         {
             Close();
         }
 
-        private void ajouterUnElementToolStripMenuItem_Click(object sender, EventArgs e)
+        private void ajouterUnElementToolStripMenuItem_Click(object pSender, EventArgs pE)
         {
             RetirerErreurs();
-            frmBalise formSecondaire = new frmBalise();
+            FrmBalise formSecondaire = new FrmBalise();
             if (formSecondaire.ShowDialog() == DialogResult.OK)
             {
                 if (tvHTML.SelectedNode == null)
@@ -260,21 +270,22 @@ namespace Tp3_A21
             }
         }
 
-        private void supprimerToolStripMenuItem_Click(object sender, EventArgs e)
+        private void supprimerToolStripMenuItem_Click(object pSender, EventArgs pE)
         {
-            if (ValidationHTML())
+            if (ValidationHtml())
             {
                 tvHTML.SelectedNode.Remove();
             }
         }
 
-        private void supprimerToolStripMenuItem1_Click(object sender, EventArgs e)
+        private void supprimerToolStripMenuItem1_Click(object pSender, EventArgs pE)
         {
             if (ValidationAttribut())
             {
                 ((Balise)tvHTML.SelectedNode).Attributs.Remove(
                     ((KeyValuePair<string, string>)lbAttributs.SelectedItem).Key);
                 AffichageAttributs();
+                tvHTML.SelectedNode.Text = tvHTML.SelectedNode.ToString();
             }
         }
 
@@ -282,18 +293,18 @@ namespace Tp3_A21
 
         #region EvenementUI
 
-        private void btnSauvContenu_Click(object sender, EventArgs e)
+        private void btnSauvContenu_Click(object pSender, EventArgs pE)
         {
-            if (ValidationHTML())
+            if (ValidationHtml())
             {
                 ((Balise)tvHTML.SelectedNode).Contenu = txtContenu.Text;
                 tvHTML.Focus();
             }
         }
 
-        private void tvHTML_AfterSelect(object sender, TreeViewEventArgs e)
+        private void tvHTML_AfterSelect(object pSender, TreeViewEventArgs pE)
         {
-            if (ValidationHTML())
+            if (ValidationHtml())
             {
                 AffichageAttributs();
                 txtContenu.Text = ((Balise)tvHTML.SelectedNode).Contenu;
@@ -312,7 +323,7 @@ namespace Tp3_A21
             }
         }
 
-        private void lbRechParTag_SelectedIndexChanged(object sender, EventArgs e)
+        private void lbRechParTag_SelectedIndexChanged(object pSender, EventArgs pE)
         {
             if (lbRechParTag.SelectedIndex != -1)
             {
@@ -331,7 +342,7 @@ namespace Tp3_A21
             errorProvider1.SetError(lbAttributs, "");
         }
 
-        private bool ValidationHTML()
+        private bool ValidationHtml()
         {
             RetirerErreurs();
             if (tvHTML.SelectedNode == null)

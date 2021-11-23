@@ -1,34 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Tp3_A21
 {
-    public partial class frmBalise : Form
+    public partial class FrmBalise : Form
     {
         private Balise _balise;
-        private Dictionary<string, string> _attributs;
+        private readonly Dictionary<string, string> _attributs;
 
         public Balise Balise
         {
             get { return _balise; }
         }
 
-        public frmBalise()
+        public FrmBalise()
         {
             InitializeComponent();
             _attributs = new Dictionary<string, string>();
         }
 
-        private void btnAjoutAttribut_Click(object sender, EventArgs e)
+        private void btnAjoutAttribut_Click(object pSender, EventArgs pE)
         {
-            frmAttribut formSecondaire = new frmAttribut();
+            FrmAttribut formSecondaire = new FrmAttribut();
             if (formSecondaire.ShowDialog() == DialogResult.OK)
             {
                 _attributs.Add(formSecondaire.Cle, formSecondaire.Valeur);
@@ -36,7 +30,7 @@ namespace Tp3_A21
             }
         }
 
-        private void btnSuppAttribut_Click(object sender, EventArgs e)
+        private void btnSuppAttribut_Click(object pSender, EventArgs pE)
         {
             if (lbAttributs.SelectedIndex != -1)
             {
@@ -46,7 +40,7 @@ namespace Tp3_A21
                 
         }
 
-        private void btnAjoutBalise_Click(object sender, EventArgs e)
+        private void btnAjoutBalise_Click(object pSender, EventArgs pE)
         {
             if (ValidationNom())
             {

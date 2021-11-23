@@ -1,7 +1,7 @@
 ﻿
 namespace Tp3_A21
 {
-    partial class frmAttribut
+    partial class FrmAttribut
     {
         /// <summary>
         /// Required designer variable.
@@ -96,7 +96,7 @@ namespace Tp3_A21
             this.Controls.Add(this.btnAjout);
             this.Controls.Add(this.txtNom);
             this.Controls.Add(this.lblNom);
-            this.Name = "frmAttribut";
+            this.Name = "FrmAttribut";
             this.Text = "Ajout d\'un attribut";
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);

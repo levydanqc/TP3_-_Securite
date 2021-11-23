@@ -1,16 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Tp3_A21
 {
-    public partial class frmAttribut : Form
+    public partial class FrmAttribut : Form
     {
         private string _cle;
         private string _valeur;
@@ -25,12 +18,12 @@ namespace Tp3_A21
             get { return _valeur; }
         }
 
-        public frmAttribut()
+        public FrmAttribut()
         {
             InitializeComponent();
         }
 
-        private void btnAjout_Click(object sender, EventArgs e)
+        private void btnAjout_Click(object pSender, EventArgs pE)
         {
             if (ValidationNom() && ValidationValeur())
             {
